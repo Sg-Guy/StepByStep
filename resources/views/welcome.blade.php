@@ -18,7 +18,7 @@
                 Commence aujourd’hui. Progresser chaque jour. Réussir demain.
             </p>
             <a href="{{ route('login') }}" class="btn btn-primary btn-lg">
-                Commencer maintenant
+                Commencer maintenant.
             </a>
         </div>
     </div>
