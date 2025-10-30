@@ -8,16 +8,22 @@ use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    //Dashbord
+    /*Dashbord
     public function index()
     {
-        $tasks = Task::orderBy('created_at' , 'desc')->paginate(5) ;
-        return view('Dashbord_view' , compact('tasks')) ;
+        //Toutes les tâches
+        $all = Task::where('user_id' , auth()->id());
         
-    }
+        
+
+        // nombre de tâches dont la date d'échéance est égale à la date d'aujourd'hui
+        return view('Dashbord_view' , compact('tasks' , 'all')) ;
+        
+    }*/
 
     public function all () {
-        $tasks = Task::orderBy('id' , 'desc')->get() ;
+        //Toutes les tâches
+        $tasks = Task::where('user_id' , auth()->id())->orderBy('created_at' , 'desc')->get();
         //dd($tasks) ;
         return view('tasks' , compact('tasks')) ;
     }

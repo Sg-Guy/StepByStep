@@ -4,14 +4,14 @@
         <div class="flex bg-white shadow-lg rounded-lg overflow-hidden  w-full m-4">
 
             <!-- Image -->
-            <div class="w-1/3  sm:block">
-                <img src="{{ asset('storage/photos/452140-PG1YNB-36.jpg') }}" 
+            <div class="w-1/2  sm:block">
+                <img src="{{ asset('storage/photos/452140-PG1YNB-3.jpg') }}" 
                      alt="photo" 
                      class="h-full w-full object-cover">
             </div>
 
             <!-- Formulaire -->
-            <div class="w-2/3 p-1">
+            <div class="w-1/2 p-1">
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
 
@@ -27,7 +27,7 @@
 
                     <!-- Password -->
                     <div class="mt-4">
-                        <x-input-label for="password" :value="__('Password')" />
+                        <x-input-label for="password" :value="__('Mot de passe')" />
                         <x-text-input id="password" class="block mt-1 w-full"
                             type="password" name="password" required autocomplete="current-password" />
                         <x-input-error :messages="$errors->get('password')" class="mt-2" />
@@ -37,21 +37,31 @@
                     <div class="flex items-center justify-between mt-4">
                         <label class="text-sm text-gray-600">
                             <input type="checkbox" class="mr-1">
-                            Remember me
+                           Se souvenir de moi
                         </label>
 
                         @if (Route::has('password.request'))
                             <a class="text-sm text-indigo-600 hover:underline"
                                 href="{{ route('password.request') }}">
-                                Forgot password?
+                                Mot de passe oublié?
                             </a>
                         @endif
                     </div>
 
+                    <div class="flex items-center justify-between mt-4">
+                        Vous n'avez pas de compte ? 
+                            <a class="text-sm text-indigo-600 hover:underline"
+                                href="{{ route('register') }}">
+                                  Inscrivez-vous
+                            </a>
+                    </div>
+
                     <!-- Button -->
                     <x-primary-button class="w-full mt-6 justify-center">
-                        {{ __('Log in') }}
+                        {{ __('Connexion') }}
                     </x-primary-button>
+
+                     
 
                 </form>
             </div>

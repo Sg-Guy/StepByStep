@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Task;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +16,24 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
+    public function dash()
+    {
+        //Toutes les tâches
+        $all = Task::where('user_id' , auth()->id());
+        
+
+        //Récuperation des tâches récentes
+        $tasks = Task::where('user_id' , auth()->id())->orderBy('created_at' , 'desc')->paginate(5) ;
+        
+        //les tâches dont la date d'échéance est égale à la date d'aujourd'hui
+        $taskToday = Task::where('user_id' , auth()->id())->whereDate('taskDueDate' , Carbon::today())->get() ;
+        
+
+        // nombre de tâches dont la date d'échéance est égale à la date d'aujourd'hui
+
+        return view('dashboard' , compact('tasks', 'taskToday' , 'all')) ;
+        
+    }
     public function edit(Request $request): View
     {
         return view('profile.edit', [

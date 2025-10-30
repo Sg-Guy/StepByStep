@@ -1,20 +1,18 @@
-<!DOCTYPE html>
-<html lang="fr">
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            {{ __('Bienvenu sur votre Dashboard') }}
+        </h2>
+    </x-slot>
+
+
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mofifier une tâche</title>
-    
     <link rel="stylesheet" href="/Bootstrap_5/css/bootstrap.min.css">
     <link rel="stylesheet" href="/bootstrap-icons/font/bootstrap-icons.css">
 </head>
     <style>
-        /* Dégradé de fond léger et moderne */
-        body {
-            background: linear-gradient(135deg, #6a8ffda6 0%, #e8ecf8 100%);
-            min-height: 100vh; /* S'assure que le dégradé couvre toute la page */
-            padding: 20px 0; /* Espacement vertical */
-        }
+       
         /* Style du conteneur principal */
         .task-creation-card {
             max-width: 800px; /* Limite la largeur sur les grands écrans */
@@ -32,8 +30,7 @@
         
     </style>
 
-<body>
-    <div class="container task-creation-card bg-white shadow-lg p-md-5 p-4 rounded-4 mx-auto">
+    <div class="container task-creation-card bg-white shadow-lg p-md-5 p-4 rounded-4 mt-4">
         
         <h1 class="display-5 mb-4 text-primary fw-bold">
             <i class="bi bi-list-task me-3"></i> Modification de tâche
@@ -120,5 +117,4 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-</body>
-</html>
+</x-app-layout>

@@ -1,19 +1,19 @@
-<!DOCTYPE html>
-<html lang="fr">
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            {{ __('Bienvenu sur votre Dashboard') }}
+        </h2>
+    </x-slot>
+
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mes Tâches</title>
     
     <link rel="stylesheet" href="/Bootstrap_5/css/bootstrap.min.css">
     <link rel="stylesheet" href="/bootstrap-icons/font/bootstrap-icons.css">
 
 </head>
     <style>
-        /* Dégradé de fond plus doux */
-        body {
-            background: linear-gradient(135deg, #f3f6ff 0%, #e8ecf8 100%);
-        }
+       
         /* Conteneur principal : moins de marge sur mobile, plus de marge sur desktop */
         .card-container {
             max-width: 1000px;
@@ -47,8 +47,7 @@
         }
     </style>
 
-<body>
-    <div class="container bg-white shadow-lg p-5 rounded-4 mx-auto card-container">
+    <div class="container bg-white shadow-lg p-5 rounded-4 mt-4 card-container">
         
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
             <h1 class="h2 mb-0">Mes Tâches</h1> 
@@ -75,7 +74,9 @@
         <h2 class="h4 mb-3">Liste des Tâches</h2>
         
         <div class="table-responsive">
-            <table class="table table-hover align-middle">
+
+            @if (count($tasks) != 0)
+                <table class="table table-hover align-middle">
                 <thead class="table-light">
                     <tr>
                         <th class="col-1">État</th>
@@ -136,11 +137,14 @@
 
                     </tbody>
             </table>
+            <p class="text-muted mt-3 pt-3 border-top">
+                 <i class="bi bi-info-circle me-1"></i> Total de {{count($tasks)}} Tâches, dont 2 en retard.
+            </p>
+            @else
+                <p class="text-center h6"> Vous n'avez aucue tâche enrégistrée . <a href="{{route('create')}}">Créez-en une</a> </p>
+            @endif
         </div>
         
-        <p class="text-muted mt-3 pt-3 border-top">
-            <i class="bi bi-info-circle me-1"></i> Total de 6 Tâches, dont 2 en retard.
-        </p>
+        
     </div>
-</body>
-</html>
+</x-app-layout>
