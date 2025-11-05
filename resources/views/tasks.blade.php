@@ -1,13 +1,14 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Bienvenu sur votre Dashboard') }}
-        </h2>
-    </x-slot>
 
 
 <head>
-    
+     @if ($errors->any())
+    <div>
+        @foreach ($errors->all() as $error)
+            <p>{{ $error }}</p>
+        @endforeach
+    </div>
+@endif
     <link rel="stylesheet" href="/Bootstrap_5/css/bootstrap.min.css">
     <link rel="stylesheet" href="/bootstrap-icons/font/bootstrap-icons.css">
 
@@ -59,7 +60,8 @@
                 </button>
             </div>
         </div>
-
+        
+        <!---->
         <a href="{{route('create')}}" class="mt-4 mb-5 btn btn-primary rounded-pill w-100 w-md-auto px-4">
             <i class="bi bi-plus-circle me-2"></i> Créer une nouvelle tâche
         </a>
@@ -82,54 +84,96 @@
                         <th class="col-1">État</th>
                         <th class="col-4">Tâche</th>
                         <th class="col-2 text-center">Échéance</th>
+                        <!-- le th ci-dessous contient le bouton pour terminer la tâche qui n'est pas encore terminée-->
+                        <th></th> 
                         <th class="col-3 text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- Recupération et manipulation des tâches liées à l'utilisateur connecté-->
                     @foreach (auth()->user()->tasks as $task)
-                        <tr class="table-success opacity-75">
-                        <td><input type="checkbox" class="form-check-input fs-4" checked></td>
+                    <tr class="table-success opacity-75 @if ($task->taskStatus=='terminee')
+                    text-decoration-line-through opacity-25 
+                        @endif">
+
+                         <!-- Si la tâche est terminée , le checkbox est à true et à false sinon-->
+                        
+                        <td><input type="checkbox" class="form-check-input fs-4" @if ($task->taskStatus=='terminee')
+                                @checked(true)          
+
+                            @else  
+
+                                @checked(false)        
+                            @endif ></td>
                             
+                         <!-- Titre de la tache-->
                         <td>
-                            <div>
-                                @if ($task->id==1)
-                                 <p class="h5 mb-0 text-decoration-line-through">{{$task->taskTitle}}</p>
-                                @else
-                                 <p class="h5 mb-0">{{$task->taskTitle}}</p>
-                                @endif 
-                            </div>
+                            <p class="h5 mb-0">{{$task->taskTitle}}</p>
                         </td>
+
+                         <!-- Date de création de la tache-->
                         <td class="text-center">
                             <p class="text-muted small mb-0">{{$task->created_at}}</p>
                         </td>
+
+
+                         <!-- Actions à faire-->
+                        <td>
+                             <div>
+                                <!--Si la tache est en cours ou en pause , on met un bouton pour la terminer-->
+                                    @if ($task->taskStatus !='terminee') 
+                                        <form action="{{route('task.status' , $task->id)}}" method="post">
+                                            @csrf
+                                            @method('patch')
+                                            <input type="text" name="taskStatus" hidden value="terminee">
+                                            <button class="btn btn-sm btn-success round" title="Terminer" >marquer comme terminée</button>
+                                        </form>
+                                    @endif
+                                </div>
+                        </td>
+
                         <td class="text-center">
+
+                            <!-- Tache en pause-->
                             <div class="d-flex flex-row gap-2">
-                                <a href="{{route ('edite' , $task->id)}}" class="btn btn-sm btn-primary" title="Éditer" ><i class="bi bi-pencil"></i></a>
-                            
 
                             @if ($task->taskStatus == 'en pause')
-                            <form action="{{route('task.status' , $task->id)}}" method="post">
-                                @csrf
-                                @method('patch')
-                                <input type="text" name="taskStatus" hidden value="en cours">
-                                <button class="btn btn-sm btn-success" title="Démarrer" ><i class="bi bi-play-fill"></i></button>
-                            </form>
-                                
-                            @else
+                                <a href="{{route ('edite' , $task->id)}}" class="btn btn-sm btn-primary" title="Éditer" ><i class="bi bi-pencil"></i></a>
+                            
+                                <form action="{{route('task.status' , $task->id)}}" method="post">
+                                    @csrf
+                                    @method('patch')
+                                    <input type="text" name="taskStatus" hidden value="en cours">
+                                    <button class="btn btn-sm btn-success" title="Démarrer" ><i class="bi bi-play-fill"></i></button>
+                                </form>
+                            
+                             <!-- Tache en cours-->
+                           @elseif ($task->taskStatus == 'en cours')
+                                <a href="{{route ('edite' , $task->id)}}" class="btn btn-sm btn-primary" title="Éditer" ><i class="bi bi-pencil"></i></a>
                             <form action="{{route('task.status' , $task->id)}}" method="post">
                                 @csrf
                                 @method('patch')
                                 <input type="text" name="taskStatus" hidden value="en pause">
                             <button class="btn btn-sm btn-success" title="Mettre en pause" ><i class="bi bi-pause-fill"></i></button>
                             </form>
-                                
+
+                             <!-- Tache TERMINEE-->
+                            @else
+                            <a href="{{route ('edite' , $task->id)}}" class="btn btn-sm btn-primary disabled" title="Éditer" ><i class="bi bi-pencil"></i></a>
+                            <form action="{{route('task.status' , $task->id)}}" method="post">
+                                @csrf
+                                @method('patch')
+                                <input type="text" name="taskStatus" hidden value="en pause">
+                            <button class="btn btn-sm btn-success" title="Mettre en pause" disabled><i class="bi bi-pause-fill"></i></button>
+                            </form>
                             @endif
                            
-                                <form action="{{route('delete' , $task->id)}}" method="POST">
+                             <!-- Button de suppression pour chaque taches-->
+                             <form action="{{route('task.delete',$task->id)}}" method="POST">
                                 @csrf
                                 @method('delete')
-                                <button class="btn btn-sm btn-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
-                            </form>
+                                    <button class="btn btn-sm btn-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
+                                </form>
                             </div>
                         </td>
                         </tr>

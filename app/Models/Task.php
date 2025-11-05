@@ -12,7 +12,9 @@ class Task extends Model
         "taskCategory" ,
         "taskPriority" ,
         "taskDueDate" ,
-        "taskReminder" 
+        "taskReminder" ,
+        "taskStatus" ,
+        'user_id' ,
     ] ;
 
 

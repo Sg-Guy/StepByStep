@@ -1,13 +1,20 @@
 <x-app-layout>
-    <x-slot name="header">
+    <!--x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Bienvenu sur votre Dashboard') }}
         </h2>
-    </x-slot>
+    </!--x-slot -->
 
 
     
 <head>
+    @if ($errors->any())
+    <div>
+        @foreach ($errors->all() as $error)
+            <p>{{ $error }}</p>
+        @endforeach
+    </div>
+@endif
     <title>Créer une Nouvelle Tâche</title>
     
     <link rel="stylesheet" href="/Bootstrap_5/css/bootstrap.min.css">
@@ -49,13 +56,24 @@
                 <label for="taskTitle" class="form-label fw-bold">Titre de la Tâche <span class="text-danger">*</span></label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-pencil-square"></i></span>
-                    <input type="text" class="form-control form-control-lg" name="taskTitle" placeholder="Ex: Finaliser le rapport trimestriel" required>
+                    <input type="text" class="form-control form-control-lg @error('taskTitle')
+                        is-invalid
+                    @enderror" name="taskTitle" placeholder="Ex: Finaliser le rapport trimestriel" required>
+                    @error('taskTilte')
+                        <div class="text-danger small">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
 
             <div class="mb-4">
                 <label for="taskDescription" class="form-label fw-bold">Description / Notes</label>
-                <textarea class="form-control" name="taskDescription" rows="3" placeholder="Détaillez les étapes ou les objectifs de la tâche..."></textarea>
+                <textarea class="form-control @error('taskDescription')
+                    is-invalid
+                @enderror" name="taskDescription" rows="3" placeholder="Détaillez les étapes ou les objectifs de la tâche..."></textarea>
+                
+                @error('taskDescription')
+                    <div class="text-danger small">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="row g-3 mb-4">
@@ -64,7 +82,13 @@
                     <label for="taskDueDate" class="form-label fw-bold">Date et Heure d'échéance</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-calendar-check"></i></span>
-                        <input type="datetime-local" class="form-control" name="taskDueDate">
+                        <input type="datetime-local" class="form-control @error('taskDueDate')
+                            is-invalid
+                        @enderror" name="taskDueDate">
+
+                        @error('taskDueDate')
+                            <div class="text-danger small"> {{$message }}</div>
+                        @enderror
                     </div>
                 </div>
 
@@ -72,12 +96,19 @@
                     <label for="taskCategory" class="form-label fw-bold">Catégorie</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-tag"></i></span>
-                        <select class="form-select" name="taskCategory" aria-label="Catégorie de la tâche">
+                        <select class="form-select @error('taskCategory')
+                            is-invalid
+                        @enderror" name="taskCategory" aria-label="Catégorie de la tâche">
                             <option selected>Sélectionner...</option>
                             <option value="travail">Travail</option>
                             <option value="personnel">Personnel</option>
                             <option value="urgent">Urgent</option>
                         </select>
+                        @error('taskCategory')
+                            <div class="text-danger small">
+                                {{$message}}
+                            </div>
+                        @enderror
                     </div>
                 </div>
                 

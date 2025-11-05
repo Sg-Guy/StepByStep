@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TaskRequest;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -30,25 +31,26 @@ class TaskController extends Controller
 
     //Formulaie de création
     public function create()
+    
     {
+
+
         return view('create_task') ;
     }
 
     //Méthode pour le stockage
-    public function store(Request $request)
+    public function store(TaskRequest $request)
     {
+        
     
-        $task = new Task() ;
-        $task->taskTitle = $request->taskTitle ;
-        $task->taskDescription = $request->taskDescription ;
-        $task->taskCategory = $request->taskCategory ;
-        $task->taskPriority = $request->taskPriority ;
-        $task->taskDueDate = $request->taskDueDate ;
-        $task->taskReminder = $request->taskReminder ;
+        $task = new Task($request->validated()) ;
+        $task->user_id = auth()->user()->id; 
+        $task->taskStatus = $request->taskStatus ?? 'en pause' ;
+        
 
-        $request->user()-> tasks()->save($task);
+        $task->save();
  
-        return redirect()->route('all_tasks')->with("success" , "Tâche créée avec succès") ;
+        return redirect()->route("all_tasks")->with("success" , "Tâche créée avec succès") ;
     }
 
     
@@ -69,35 +71,41 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Task $task)
+    public function update(TaskRequest $request, Task $task)
     {
-       $task->taskTitle = $request->taskTitle ;
-       $task->taskDescription = $request->taskDescription ;
-       $task->taskCategory = $request->taskCategory ;
-       $task->taskPriority = $request->taskPriority ;
-       $task->taskDueDate = $request->taskDueDate ;
-       $task->taskReminder = $request->taskReminder ;
-       $task->taskStatus = $request->taskStatus ;
-
-       $request->user()->tasks()->save($task);
+       $task = new Task($request->validated()) ;
+       $task->user_id = auth()->user()->id; 
+       
+       $task->update();
 
         return redirect()->route('all_tasks')->with("success" , "Tâche mise à jour") ;
     }
-    public function patch(Request $request, Task $task)
+
+    public function patch(TaskRequest $request, Task $task)
     {
        $task->taskStatus = $request->taskStatus ;
-
-       $task-> update();
+       $task-> save() ;
        
-        return redirect()->route('all_tasks')->with("success" , "Tâche mise à jour") ;
+        return redirect()->back()->with("success" , "Tâche mise à jour") ;
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Task $task)
+    public function destroy(Request $request , Task $task)
     {
+        //Task::where('id' , "=" , $task->id)->get();
         $task->delete();
         return redirect()->route('all_tasks') ;
+    }
+
+
+    /**
+     * Find all done tasks
+     */
+    public function done()
+    {
+        $taskdone = Task::where('taskStatus',"=" , 'terminee')->get();
+        return view('taskDone' , compact('taskdone')) ;
     }
 }

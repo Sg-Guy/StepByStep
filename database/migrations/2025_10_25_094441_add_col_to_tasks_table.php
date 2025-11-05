@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->enum('taskStatus' , allowed: ['en pause' , 'en cours' ])->default(value: 'en cours')->after(('taskReminder')) ;
+            $table->enum('taskStatus' , allowed: ['en pause' , 'en cours' , 'terminee' ])->default(value: 'en cours')->after(('taskReminder')) ;
         });
     }
 

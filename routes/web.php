@@ -44,7 +44,10 @@ Route::prefix('/tasks')->controller(TaskController::class)->group(function (){
     Route::patch('patch/{task}' , 'patch')->name('task.status');
     
     //Suppression de tâches
-    Route::delete('delete/{task}' , 'destroy')->name('delete');
+    Route::delete('delete/task/{task}' , 'destroy')->name('task.delete');
+
+    //Taches terminées
+    Route::get('/done' , 'done')->name('tasks.done') ;
     
 
 }) ;

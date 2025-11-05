@@ -1,9 +1,5 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Bienvenu sur votre Dashboard') }}
-        </h2>
-    </x-slot>
+    
 
 <head>
     
@@ -40,7 +36,7 @@
     <main class="container-md bg-white shadow-lg m-5 p-4 rounded-3 mx-auto">
         
         <div class="mb-4">
-            <h1>Bonjour {{ auth()->user()->firstname}}, Prêt (e) pour une journée productive ?</h1> 
+            <h1>Bonjour {{ auth()->user()->lastname[0]}}. {{ Str::Lower(auth()->user()->firstname)}}, Prêt (e) pour une journée productive ?</h1> 
             
             <p class="text-secondary small">
                 {{now()}}
@@ -109,7 +105,7 @@
                         </div>
 
                         <div class="text-center">
-                           75%
+                           {{count($tasks)*100/10}} %
                         </div>
                         
                     </div>
