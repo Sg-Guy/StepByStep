@@ -35,7 +35,6 @@ class TaskRequest extends FormRequest
             'taskCategory'=>'required|string' ,
             'taskPriority'=>'required' ,
             'taskReminder'=>'nullable' ,
-            'taskStatus'=>'required|string|' ,
         ]; 
     }
 

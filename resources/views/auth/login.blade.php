@@ -1,72 +1,85 @@
-<x-guest-layout>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - StepByStep</title>
+    <link rel="stylesheet" href="/Bootstrap_5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/login_split_style.css"> 
+    
+    <style>
+        /* CSS du conteneur principal pour le centrage vertical (si non géré par votre layout) */
+        .full-screen-center {
+            min-height: 100vh;
+        }
+        /* Style pour l'image (pour s'assurer qu'elle couvre bien l'espace) */
+        .login-image-col img {
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container d-flex justify-content-center align-items-center full-screen-center">
+        
+        <div class="card shadow-lg border-0 overflow-hidden w-50 mx-auto login-card">
+            
 
-    <div class="flex items-center justify-center  bg-gray-100 w-100">
-        <div class="flex bg-white shadow-lg rounded-lg overflow-hidden  w-full m-4">
 
-            <!-- Image -->
-            <div class="w-1/2  sm:block">
-                <img src="{{ asset('storage/photos/452140-PG1YNB-3.jpg') }}" 
-                     alt="photo" 
-                     class="h-full w-full object-cover">
-            </div>
+                <div class="login-form-col p-4 p-md-5">
+                    
+                    <h2 class="h3 fw-bold text-center mb-4 text-primary">
+                        <i class="bi bi-person-circle me-2"></i> Connexion
+                    </h2>
 
-            <!-- Formulaire -->
-            <div class="w-1/2 p-1">
-                <form method="POST" action="{{ route('login') }}">
-                    @csrf
+                    <form method="POST" action="{{route('login')}}">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input id="email" class="form-control" type="email" name="email" required autofocus autocomplete="username" placeholder="Entrez votre email">
+                            </div>
+                            </div>
 
-                    <x-auth-session-status class="mb-4" :status="session('status')" />
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Mot de passe</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input id="password" class="form-control" type="password" name="password" required autocomplete="current-password" placeholder="Mot de passe">
+                            </div>
+                             </div>
 
-                    <!-- Email -->
-                    <div>
-                        <x-input-label for="email" :value="__('Email')" />
-                        <x-text-input id="email" class="block mt-1 w-full"
-                            type="email" name="email" required autofocus autocomplete="username" />
-                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                    </div>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="remember_me" **name="remember"**>
+                                <label class="form-check-label text-secondary small" for="remember_me">
+                                    Se souvenir de moi
+                                </label>
+                            </div>
 
-                    <!-- Password -->
-                    <div class="mt-4">
-                        <x-input-label for="password" :value="__('Mot de passe')" />
-                        <x-text-input id="password" class="block mt-1 w-full"
-                            type="password" name="password" required autocomplete="current-password" />
-                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                    </div>
-
-                    <!-- Options -->
-                    <div class="flex items-center justify-between mt-4">
-                        <label class="text-sm text-gray-600">
-                            <input type="checkbox" class="mr-1">
-                           Se souvenir de moi
-                        </label>
-
-                        @if (Route::has('password.request'))
-                            <a class="text-sm text-indigo-600 hover:underline"
-                                href="{{ route('password.request') }}">
+                            <a class="text-primary small text-decoration-none" href="{{route('password.request')}}">
                                 Mot de passe oublié?
                             </a>
-                        @endif
-                    </div>
+                        </div>
 
-                    <div class="flex items-center justify-between mt-4">
-                        Vous n'avez pas de compte ? 
-                            <a class="text-sm text-indigo-600 hover:underline"
-                                href="{{ route('register') }}">
-                                  Inscrivez-vous
+                        <div class="mb-4 text-center">
+                            <span class="text-secondary small">Vous n'avez pas de compte ? </span>
+                            <a class="text-success fw-bold small text-decoration-none" href="{{route('register')}}">
+                                Inscrivez-vous
                             </a>
+                        </div>
+                        
+                        <button type="submit" name="submit" class="btn btn-primary btn-lg w-100">
+                            Connexion
+                        </button>
+                    </form>
                     </div>
-
-                    <!-- Button -->
-                    <x-primary-button class="w-full mt-6 justify-center">
-                        {{ __('Connexion') }}
-                    </x-primary-button>
-
-                     
-
-                </form>
-            </div>
-
         </div>
     </div>
 
-</x-guest-layout>
+    <script src="/Bootstrap_5/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

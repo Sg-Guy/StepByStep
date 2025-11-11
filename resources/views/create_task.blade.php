@@ -1,45 +1,43 @@
 <x-app-layout>
-    <!--x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Bienvenu sur votre Dashboard') }}
-        </h2>
-    </!--x-slot -->
-
-
     
-<head>
-    @if ($errors->any())
-    <div>
-        @foreach ($errors->all() as $error)
-            <p>{{ $error }}</p>
-        @endforeach
-    </div>
-@endif
-    <title>Créer une Nouvelle Tâche</title>
-    
-    <link rel="stylesheet" href="/Bootstrap_5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/bootstrap-icons/font/bootstrap-icons.css">
-   
-</head>
- <style>
-        /* Dégradé de fond léger et moderne */
+    <head>
+        <title>Créer une Nouvelle Tâche</title>
         
-        /* Style du conteneur principal */
+        <link rel="stylesheet" href="/Bootstrap_5/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/bootstrap-icons/font/bootstrap-icons.css">
+    </head>
+
+    @if ($errors->any())
+        <div class="alert alert-danger mx-auto mt-4 task-creation-card" role="alert" style="max-width: 800px;">
+            <h4 class="alert-heading"><i class="bi bi-x-octagon-fill me-2"></i>Erreur(s) de soumission</h4>
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    
+    <style>
+        /* Conteneur principal: Limite la largeur et centre sur les grands écrans */
         .task-creation-card {
-            max-width: 800px; /* Limite la largeur sur les grands écrans */
+            max-width: 800px; 
+            margin-left: auto;
+            margin-right: auto;
         }
-        /* Style pour les champs d'input enrichis */
+        /* Style des icônes dans les champs de formulaire pour l'esthétique */
         .input-group-text {
             border-right: none;
-            background-color: #e9ecef;
+            background-color: #e9ecef; /* Couleur de fond clair */
+            color: #6c757d; /* Couleur d'icône secondaire */
         }
-        .form-control:focus {
+        /* Style du focus amélioré (utilise le thème primaire de Bootstrap) */
+        .form-control:focus, .form-select:focus, .form-control-lg:focus {
             box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
             border-color: #86b7fe;
         }
-
-        
     </style>
+
     <div class="container task-creation-card bg-white shadow-lg p-md-5 p-4 rounded-4 mt-4">
         
         <h1 class="display-5 mb-4 text-primary fw-bold">
@@ -51,28 +49,31 @@
         
         <form action="{{route('store')}}" method="POST">
             @csrf
-            @method('POST')
+            @method('POST') 
+
             <div class="mb-4">
                 <label for="taskTitle" class="form-label fw-bold">Titre de la Tâche <span class="text-danger">*</span></label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-pencil-square"></i></span>
-                    <input type="text" class="form-control form-control-lg @error('taskTitle')
-                        is-invalid
-                    @enderror" name="taskTitle" placeholder="Ex: Finaliser le rapport trimestriel" required>
-                    @error('taskTilte')
-                        <div class="text-danger small">{{ $message }}</div>
+                    <input type="text" class="form-control form-control-lg @error('taskTitle') is-invalid @enderror" 
+                           name="taskTitle" 
+                           placeholder="Ex: Finaliser le rapport trimestriel" 
+                           value="{{ old('taskTitle') }}" 
+                           required>
+                    @error('taskTitle')
+                        <div class="invalid-feedback d-block">{{ $message }}</div> 
                     @enderror
                 </div>
             </div>
 
             <div class="mb-4">
                 <label for="taskDescription" class="form-label fw-bold">Description / Notes</label>
-                <textarea class="form-control @error('taskDescription')
-                    is-invalid
-                @enderror" name="taskDescription" rows="3" placeholder="Détaillez les étapes ou les objectifs de la tâche..."></textarea>
-                
+                <textarea class="form-control @error('taskDescription') is-invalid @enderror" 
+                          name="taskDescription" 
+                          rows="3" 
+                          placeholder="Détaillez les étapes ou les objectifs de la tâche...">{{ old('taskDescription') }}</textarea>
                 @error('taskDescription')
-                    <div class="text-danger small">{{ $message }}</div>
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
             </div>
 
@@ -82,12 +83,11 @@
                     <label for="taskDueDate" class="form-label fw-bold">Date et Heure d'échéance</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-calendar-check"></i></span>
-                        <input type="datetime-local" class="form-control @error('taskDueDate')
-                            is-invalid
-                        @enderror" name="taskDueDate">
-
+                        <input type="datetime-local" class="form-control @error('taskDueDate') is-invalid @enderror" 
+                               name="taskDueDate" 
+                               value="{{ old('taskDueDate') }}">
                         @error('taskDueDate')
-                            <div class="text-danger small"> {{$message }}</div>
+                            <div class="invalid-feedback d-block"> {{$message }}</div>
                         @enderror
                     </div>
                 </div>
@@ -96,18 +96,14 @@
                     <label for="taskCategory" class="form-label fw-bold">Catégorie</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-tag"></i></span>
-                        <select class="form-select @error('taskCategory')
-                            is-invalid
-                        @enderror" name="taskCategory" aria-label="Catégorie de la tâche">
-                            <option selected>Sélectionner...</option>
-                            <option value="travail">Travail</option>
-                            <option value="personnel">Personnel</option>
-                            <option value="urgent">Urgent</option>
+                        <select class="form-select @error('taskCategory') is-invalid @enderror" name="taskCategory" aria-label="Catégorie de la tâche">
+                            <option value="" @if(old('taskCategory') == '') selected @endif>Sélectionner...</option>
+                            <option value="travail" @if(old('taskCategory') == 'travail') selected @endif>Travail</option>
+                            <option value="personnel" @if(old('taskCategory') == 'personnel') selected @endif>Personnel</option>
+                            <option value="urgent" @if(old('taskCategory') == 'urgent') selected @endif>Urgent</option>
                         </select>
                         @error('taskCategory')
-                            <div class="text-danger small">
-                                {{$message}}
-                            </div>
+                            <div class="invalid-feedback d-block">{{$message}}</div>
                         @enderror
                     </div>
                 </div>
@@ -117,9 +113,9 @@
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-arrow-up-circle"></i></span>
                         <select class="form-select" name="taskPriority" aria-label="Niveau de priorité">
-                            <option value="basse">Basse</option>
-                            <option value="normale" selected>Normale</option>
-                            <option value="haute">Haute</option>
+                            <option value="basse" @if(old('taskPriority') == 'basse') selected @endif>Basse</option>
+                            <option value="normale" @if(old('taskPriority') == 'normale' || !old('taskPriority')) selected @endif>Normale</option>
+                            <option value="haute" @if(old('taskPriority') == 'haute') selected @endif>Haute</option>
                         </select>
                     </div>
                 </div>
@@ -131,20 +127,17 @@
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-bell"></i></span>
                         <select class="form-select" name="taskReminder" aria-label="Rappel">
-                            <option selected value="0">Pas de rappel</option>
-                            <option value="1">1 heure avant</option>
-                            <option value="2">1 jour avant</option>
-                        </select>
+                            <option value="0" @if(old('taskReminder') == '0') selected @endif>Pas de rappel</option>
+                            <option value="1" @if(old('taskReminder') == '1') selected @endif>1 heure avant</option>
+                            <option value="24" @if(old('taskReminder') == '24') selected @endif>1 jour avant</option> </select>
                     </div>
                 </div>
-
-                
             </div>
 
             <div class="d-flex justify-content-end gap-3 pt-3 border-top">
-                <button type="button" class="btn btn-outline-secondary btn-lg rounded-pill px-4">
+                <a href="{{ url()->previous() }}" class="btn btn-outline-secondary btn-lg rounded-pill px-4">
                     <i class="bi bi-x-circle me-2"></i> Annuler
-                </button>
+                </a>
                 <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5">
                     <i class="bi bi-plus-circle me-2"></i> Créer la Tâche
                 </button>

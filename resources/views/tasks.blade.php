@@ -113,7 +113,7 @@
 
                          <!-- Date de création de la tache-->
                         <td class="text-center">
-                            <p class="text-muted small mb-0">{{$task->created_at}}</p>
+                            <p class="text-muted small mb-0">{{$task->taskDueDate}}</p>
                         </td>
 
 

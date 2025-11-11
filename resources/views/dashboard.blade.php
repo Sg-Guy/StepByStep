@@ -1,158 +1,161 @@
 <x-app-layout>
+
+    <head>
+        <title>Tableau de Bord - Tâches</title>
+        <link rel="stylesheet" href="/Bootstrap_5/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/bootstrap-icons/font/bootstrap-icons.css">
+    </head>
     
+    <style>
+        /* Styles personnalisés pour la modernité et la cohérence */
 
-<head>
-    
-    <title>Tableau de Bord - Tâches</title>
-    
-    <link rel="stylesheet" href="/Bootstrap_5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/bootstrap-icons/font/bootstrap-icons.css">
-    
-</head>
-<style>
-    /* Styles personnalisés pour la modernité et la cohérence */
+        /* Couleur personnalisée pour l'Objectif hebdomadaire */
+        .bg-purple {
+            /* Assombrissement pour meilleure lisibilité du texte blanc */
+            background-color: #5d03a1 !important; 
+        }
 
-/* Couleur personnalisée pour l'Objectif hebdomadaire */
-.bg-purple {
-    background-color: rgb(141, 3, 253) !important;
-}
+        /* Rayon pour les cartes d'indicateurs */
+        .card-custom {
+            border-radius: 1rem; /* 16px */
+            transition: transform 0.2s; /* Effet de survol fluide */
+        }
+        .card-custom:hover {
+            transform: translateY(-3px);
+        }
 
-/* Rayon pour les cartes d'indicateurs (remplace le style inline) */
-.card-custom {
-    border-radius: 1rem; /* 16px */
-}
-
-/* Rayon pour les éléments de la liste de tâches (remplace le style inline) */
-.task-item {
-    border-radius: 2rem; /* 32px */
-}
-
-/* Style de la carte principale pour centrer */
-
-
-</style>
-
-    
-    <main class="container-md bg-white shadow-lg m-5 p-4 rounded-3 mx-auto">
+        /* Style pour les éléments de la liste de tâches (Task Card) */
+        .task-item {
+            border-radius: 0.75rem; /* Rayon plus modéré */
+            padding: 1rem 1.5rem; /* Padding interne */
+            border: 1px solid #e9ecef; /* Bordure légère */
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .task-item:hover {
+            background-color: #f8f9fa !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
         
-        <div class="mb-4">
-            <h1>Bonjour {{ auth()->user()->lastname[0]}}. {{ Str::Lower(auth()->user()->firstname)}}, Prêt (e) pour une journée productive ?</h1> 
-            
-            <p class="text-secondary small">
-                {{now()}}
-            </p>
+        /* Centrage et max-width pour le conteneur principal */
+        .main-card {
+            max-width: 1200px; /* Augmenter la largeur pour le design desktop */
+        }
+        .search-input-group {
+            max-width: 400px; /* Limiter la largeur de la recherche pour ne pas saturer */
+        }
 
-            <div class="d-flex flex-row justify-content-end me-2 gap-3">
+    </style>
+
+    <main class="container-fluid bg-white shadow-lg py-5 px-4 rounded-3 mt-5 main-card mx-auto"> 
+        
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-5 border-bottom pb-3">
+            <div>
+                <h1 class="display-6 fw-bold">Bonjour {{ auth()->user()->lastname[0]}}. {{ Str::ucfirst(auth()->user()->firstname)}}</h1> 
+                <p class="text-muted fst-italic mb-0">
+                    Prêt(e) pour une journée productive ? Il est {{ now()->format('H:i') }}.
+                </p>
+            </div>
+
+            <div class="d-flex gap-3 mt-3 mt-md-0">
                 <a href="{{route('all_tasks')}}" class="btn btn-outline-secondary">
-                    Voir toutes mes tâches
+                    <i class="bi bi-list-task me-1"></i> Toutes les tâches
                 </a>
-                <a href="{{route('create')}}" class="btn btn-outline-primary">
-                    Créer une nouvelle tâche
+                <a href="{{route('create')}}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i> Nouvelle tâche
                 </a>
-
             </div>
         </div>
 
-        <section class="row mt-4 mb-5 g-3">
-            
-            <div class="col-sm-3"> 
-                <div class="card text-center text-white bg-success bg-opacity-75 p-3 shadow-sm border-0 card-custom">
-                   <div>
-                            <p class="h5 m-0"><i class="bi bi-watch me-2"></i></i></p>
-                    </div>
-                    <div class="d-flex flex-column">
-                        
-                        <div>
-                            Tâches du jour
+        <section class="row mt-4 mb-5 g-4"> <div class="col-6 col-md-3"> <div class="card text-white bg-success p-4 shadow-sm border-0 card-custom"> <div class="d-flex align-items-center justify-content-between">
+                        <div class="me-3">
+                            <p class="h6 text-uppercase mb-1">Tâches du jour</p>
+                            <div class="h3 fw-bold mb-0">{{count($taskToday)}}</div>
                         </div>
-
-                        <div class="text-center">
-                            {{count($taskToday)}}
-                        </div>
-                        
+                        <i class="bi bi-watch display-6 opacity-75"></i>
                     </div>
                 </div>
             </div>
             
-            <div class="col-sm-3">
-                <div class="card text-center text-white bg-warning bg-opacity-75 p-3 shadow-sm border-0 card-custom">
-                    <div>
-                            <p class="h5 m-0"><i class="bi bi-fire me-2"></i></p>
-                    </div>
-                    <div class="d-flex flex-column">
-                        
-                        <div>
-                            Tâches en retard
+            <div class="col-6 col-md-3">
+                <div class="card text-white bg-danger p-4 shadow-sm border-0 card-custom"> <div class="d-flex align-items-center justify-content-between">
+                        <div class="me-3">
+                            <p class="h6 text-uppercase mb-1">Tâches en retard</p>
+                            <div class="h3 fw-bold mb-0">{{count($taskToday)}}</div> 
                         </div>
-                        
-                        <div class="text-center">
-                           {{count($taskToday)}}
-                        </div>
-                        
+                        <i class="bi bi-fire display-6 opacity-75"></i>
                     </div>
                 </div>
             </div>
             
-            <div class="col-sm-3">
-                <div class="card text-center bg-white p-3 shadow border-0 card-custom">
-                    <div>
-                            <p class="h5 m-0"><i class="bi bi-percent me-2"></i></p>
-                    </div>
-                    <div class="d-flex flex-column">
-                        
-                        <div>
-                            Objectif Hebdomadaire
+            <div class="col-6 col-md-3">
+                <div class="card text-dark bg-light p-4 shadow-sm border-0 card-custom">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="me-3">
+                            <p class="h6 text-uppercase mb-1">Toutes les Tâches</p>
+                            <div class="h3 fw-bold mb-0">{{count($tasks)}}</div>
                         </div>
-
-                        <div class="text-center">
-                           {{count($tasks)*100/10}} %
-                        </div>
-                        
+                        <i class="bi bi-list-check display-6 text-secondary opacity-75"></i>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-3">
-                <div class="card text-center text-white bg-purple p-3 shadow-sm border-0 card-custom">
-                    <div>
-                            <p class="h5 m-0"><i class="bi bi-percent me-2"></i></p>
-                    </div>
-                    <div class="d-flex flex-column">
-                        
-                        <div>
-                            Objectif Hebdomadaire
-                        </div>
-
-                        <div class="text-center">
-                           75%
-                        </div>
-                        
+            
+            <div class="col-6 col-md-3">
+                <div class="card text-white bg-purple p-4 shadow-sm border-0 card-custom">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="me-3">
+                            <p class="h6 text-uppercase mb-1">Progression (Exemple)</p>
+                            <div class="h3 fw-bold mb-0">75%</div> </div>
+                        <i class="bi bi-graph-up display-6 opacity-75"></i>
                     </div>
                 </div>
             </div>
         </section>
 
-        <hr> 
-        <h2 class="mt-4 mb-3">Tâches Récentes</h2>
+        <hr class="mt-4 mb-4"> 
+        <h2 class="h3 fw-bold mb-4"><i class="bi bi-calendar-check me-2 text-primary"></i>Tâches Récentes</h2>
         
-            @if (count($tasks) !=0)
-                <div class="input-group search-input-group mb-3 d-flex justify-content-end">
-                <input type="search" class="form-control " placeholder="Rechercher une tâche...">
+        <div class="mb-4">
+            <div class="input-group search-input-group">
+                <input type="search" class="form-control" placeholder="Rechercher une tâche...">
                 <button class="btn btn-primary" type="button">
                     <i class="bi bi-search"></i>
                 </button>
             </div>
+        </div>
 
         <div>
-            @foreach (auth()->user()->tasks as $task)   
-                <p class="bg-light shadow-sm text-muted p-3 task-item mb-3"> 
-                    {{$task->taskTitle}} - Échéance : {{$task->taskDueDate}}
-                </p>
-            @endforeach
-        </div>
+            @if (count($tasks) > 0)
+                <div class="list-group">
+                @foreach (auth()->user()->tasks->take(5) as $task) <a href="#" class="list-group-item list-group-item-action task-item mb-3 d-flex justify-content-between align-items-center bg-light">
+                        
+                        <div class="fw-bold text-dark">
+                            {{$task->taskTitle}}
+                        </div>
+                        
+                        <div>
+                            @if (\Carbon\Carbon::parse($task->taskDueDate)->isPast())
+                                <span class="badge bg-danger me-2">En Retard</span>
+                            @else
+                                <span class="badge bg-info me-2">À faire</span>
+                            @endif
+                            
+                            <span class="text-secondary small">
+                                Échéance : **{{ \Carbon\Carbon::parse($task->taskDueDate)->format('d M') }}**
+                            </span>
+                        </div>
+                    </a>
+                @endforeach
+                </div>
             @else
-                <p>Vous n'avez aucune tâche enrégistrée .  <a href="{{route('create')}}">Créez-en une</a></p> 
+                <div class="alert alert-secondary text-center mt-4" role="alert">
+                    <p class="h5 mb-2">Vous n'avez aucune tâche enregistrée.</p>
+                    <a href="{{route('create')}}" class="alert-link">Créez-en une ici</a> pour commencer !
+                </div>
             @endif
+        </div>
     </main>
+    
     <script src="/public/Bootstrap_5/js/bootstrap.min.js"></script>
 
 </x-app-layout>
