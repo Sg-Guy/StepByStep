@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
+use function Symfony\Component\Clock\now;
+
 class ProfileController extends Controller
 {
     /**
@@ -28,10 +30,19 @@ class ProfileController extends Controller
         //les tâches dont la date d'échéance est égale à la date d'aujourd'hui
         $taskToday = Task::where('user_id' , auth()->id())->whereDate('taskDueDate' , Carbon::today())->get() ;
         
+        //taches en retard
+        $date1 = Carbon::now() ;
+       $lateTasks = Task::where('user_id' , auth()->id()) 
+                            ->where('taskDueDate','<' , $date1)
+                            ->count();
+
+        //taches termineés
+        $doneTasks = Task::where('user_id' , auth()->id())
+                            ->where('taskStatus' , 'terminee')->count();
 
         // nombre de tâches dont la date d'échéance est égale à la date d'aujourd'hui
 
-        return view('dashboard' , compact('tasks', 'taskToday' , 'all')) ;
+        return view('dashboard' , compact('tasks', 'taskToday' , 'all' , 'lateTasks' , 'doneTasks')) ;
         
     }
     public function edit(Request $request): View

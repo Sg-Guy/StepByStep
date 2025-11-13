@@ -81,7 +81,7 @@
                 <div class="card text-white bg-danger p-4 shadow-sm border-0 card-custom"> <div class="d-flex align-items-center justify-content-between">
                         <div class="me-3">
                             <p class="h6 text-uppercase mb-1">Tâches en retard</p>
-                            <div class="h3 fw-bold mb-0">{{count($taskToday)}}</div> 
+                            <div class="h3 fw-bold mb-0">{{$lateTasks}}</div> 
                         </div>
                         <i class="bi bi-fire display-6 opacity-75"></i>
                     </div>
@@ -104,8 +104,8 @@
                 <div class="card text-white bg-purple p-4 shadow-sm border-0 card-custom">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="me-3">
-                            <p class="h6 text-uppercase mb-1">Progression (Exemple)</p>
-                            <div class="h3 fw-bold mb-0">75%</div> </div>
+                            <p class="h6 text-uppercase mb-1">Progression</p>
+                            <div class="h3 fw-bold mb-0">{{ round(($doneTasks * 100) /count($tasks) ,2) }}%</div> </div>
                         <i class="bi bi-graph-up display-6 opacity-75"></i>
                     </div>
                 </div>

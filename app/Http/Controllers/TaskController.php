@@ -22,7 +22,7 @@ class TaskController extends Controller
         
     }*/
 
-    public function all () {
+    public function index () {
         //Toutes les tâches
         $tasks = Task::where('user_id' , auth()->id())->orderBy('created_at' , 'desc')->get();
         //dd($tasks) ;
@@ -33,7 +33,6 @@ class TaskController extends Controller
     public function create()
     
     {
-
 
         return view('create_task') ;
     }
@@ -65,7 +64,11 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
-        return view('edittask' , compact('task')) ;
+        if(($task->user_id) == (auth()->user()->id) ) {
+            return view('edittask' , compact('task')) ;
+        } else  {
+           abort(404);
+        }
     }
 
     /**
@@ -73,12 +76,16 @@ class TaskController extends Controller
      */
     public function update(TaskRequest $request, Task $task)
     {
-       $task = new Task($request->validated()) ;
-       $task->user_id = auth()->user()->id; 
-       
-       $task->update();
-
-        return redirect()->route('all_tasks')->with("success" , "Tâche mise à jour") ;
+        if(($task->user_id) == (auth()->user()->id) ) {
+            $task = new Task($request->validated()) ;
+            $task->user_id = auth()->user()->id; 
+            
+            $task->update();
+     
+             return redirect()->route('all_tasks')->with("success" , "Tâche mise à jour") ;
+        } else {
+            abort(404) ;
+        }
     }
 
     public function patch(TaskRequest $request, Task $task)

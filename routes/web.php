@@ -21,12 +21,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::prefix('/tasks')->controller(TaskController::class)->group(function (){
-    //Route qui  affiche le dashbord
-    Route::get('/', 'index')->name('index');
+Route::prefix('/tasks')->middleware('auth')->controller(TaskController::class)->group(function (){
+    //Toutes les taches
+    Route::get('/', 'index')->name('all_tasks');
 
     //Toutes les taches
-    Route::get('/all', 'all')->name('all_tasks')->middleware('auth');
+    //Route::get('/', 'all')->name('all_tasks');
     
     //formulaire de creation de taches
     Route::get('/register/form', 'create')->name('create');
