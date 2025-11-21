@@ -58,13 +58,6 @@
         
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
             <h1 class="h2 mb-0 text-primary fw-bold">{{$title}}</h1> 
-            
-            <div class="input-group search-input-group">
-                <input type="search" class="form-control" placeholder="Rechercher une tâche...">
-                <button class="btn btn-primary" type="button">
-                    <i class="bi bi-search"></i>
-                </button>
-            </div>
         </div>
         
         <a href="{{route('create')}}" class="mt-4 mb-5 btn btn-primary rounded-pill w-100 w-md-auto px-4">
@@ -73,15 +66,16 @@
         
          <div class="d-flex flex-wrap gap-2 mb-5 p-2">
             <form action="{{route('tasks.late')}}">
-                <button type="submit" name="action_type" value="today" class="btn btn-outline-secondary btn-filter active">Aujourd'hui</button>
-                <button type="submit" name="action_type" value="thisweek" class="btn btn-outline-secondary btn-filter">Cette semaine</button>
-                <button type="submit" name="action_type" value="done" class="btn btn-outline-secondary btn-filter">Terminées</button>
-                <button type="submit" name="action_type" value="late" class="btn btn-outline-secondary btn-filter">En retard</button>
+                <button id="btn" type="submit" name="action_type" value="today" class="btn btn-outline-secondary btn-filter mb-2">Aujourd'hui</button>
+                <button type="submit" name="action_type" value="thisweek" class="btn btn-outline-secondary btn-filter  mb-2">Cette semaine</button>
+                <button type="submit" name="action_type" value="done" class="btn btn-outline-secondary btn-filter  mb-2">Terminées</button>
+                <button type="submit" name="action_type" value="late" class="btn btn-outline-secondary btn-filter  mb-2">En retard</button>
+                <button type="submit" name="action_type" value="urgent" class="btn btn-outline-secondary btn-filter  mb-2">Urgentes</button>
 
             </form>
         </div>
         
-        <h2 class="h4 mb-3"><i class="bi bi-check2-circle text-success me-2"></i>{{$title}}</h2>
+        <h2 class="h4 mb-3"><i class="bi bi-check2-circle opacity-75 me-2"></i>{{$title}}</h2>
         
         <div class="table-responsive">
 
@@ -98,16 +92,30 @@
             @if (count($tasks) > 0) <table class="table table-hover align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th style="width: 5%;">État</th> <th style="width: 50%;">Tâche</th> <th style="width: 25%;">Date Création</th> <th class="hidden-th"></th> 
-                            <th style="width: 20%;" class="text-end">Actions</th> </tr>
+                            <th style="width: 5%;">État
+                            </th> <th style="width: 50%;">Tâche</th> 
+                            <th style="width: 25%;">Date Création</th> 
+                            <th class="hidden-th"></th> 
+                            <th style="width: 20%;" class="text-end">Actions</th>
+                        </tr>
                     </thead>
                     <tbody>
                         @foreach ($tasks as $task)
-                        <tr class="table-success opacity-100"> <td> <input type="checkbox" class="form-check-input fs-4" checked disabled> </td> <td>
-                                <p class="h5 mb-0 text-decoration-line-through text-success">{{$task->taskTitle}}</p>
-                                @if (isset($task->description))
-                                    <small class="text-muted fst-italic">{{ Str::limit($task->description, 50) }}</small>
-                                @endif
+                        <tr class="opacity-100 "> 
+                            <td> 
+                                <input type="checkbox" class="form-check-input fs-4" @if ($task->taskStatus == 'terminee')
+                                    @checked(true)
+                                    @disabled(true)
+
+                                    @else
+                                        @checked(false)
+                                        @disabled(true)
+                                    @endif> 
+                            </td> 
+                            <td>
+                                <p class="h5 mb-0  text-success @if ($task->taskStatus == 'terminee')
+                                    text-decoration-line-through
+                                    @endif">{{$task->taskTitle}}</p>
                             </td>
 
                             <td class="text-center">
@@ -139,8 +147,8 @@
                 
             @else
                 <div class="alert alert-info text-center mt-5 p-4" role="alert">
-                    <p class="h5 mb-2"><i class="bi bi-info-circle me-2"></i> Aucune tâche terminée pour le moment.</p>
-                    <a href="{{route('create')}}" class="alert-link fw-bold">Cliquez ici pour créer votre première tâche.</a>
+                    <p class="h5 mb-2"><i class="bi bi-info-circle me-2"></i> {{$vide}}</p>
+                    <a href="{{route('create')}}" class="alert-link fw-bold"></a>
                 </div>
             @endif
         </div>

@@ -32,8 +32,8 @@ class TaskController extends Controller
         //taches en retard
         $date1 = Carbon::now() ;
         $lateTasks = Task::where('user_id' , auth()->id()) 
-                            ->where('taskStatus','!=' , 'terminee')
                             ->where('taskDueDate','<' , $date1)
+                            ->where('taskStatus','!' , 'terminee')
                             ->count();
 
         return view('tasks' , compact('tasks' , 'lateTasks')) ;
@@ -142,29 +142,40 @@ class TaskController extends Controller
 
             $title = "Les tâches du jour" ;
             $taskcount = count( $tasks);
+            $vide = "Aucune tâche Pour la journée d'aujourd'hui." ;
             $message = " Total de ** $taskcount ** tâches pour aujourd'hui";
 
-            return view('taskDone' , compact('tasks' , 'title' , 'message')) ;
+            return view('taskDone' , compact('tasks' , 'title' , 'message' , "vide")) ;
 
         } elseif ($action == 'thisweek') {
-            $tasks = Task::where('user_id', auth()->id())
-                        ->where('taskDueDate',">" , now())
+            $startOfWeek = Carbon::now()->startOfWeek();
+
+            // Définir la fin de la semaine actuelle (par exemple, dimanche 23:59:59)
+            $endOfWeek = Carbon::now()->endOfWeek();
+
+            // Récupérer les tâches dont la date se situe dans cette plage
+            $tasks = Task::whereBetween('taskDueDate', [$startOfWeek, $endOfWeek])
+                        ->where('user_id', auth()->id())
                         ->get();
 
             $title = "Les tâches de la semaine" ;
-             $taskcount = count( $tasks);
+            $taskcount = count( $tasks);
+            $vide = "Aucune tâche Pour cette semaine" ;
             $message = " Total de ** $taskcount ** tâches pour cette semaine";
-            return view('taskDone' , compact('tasks' , 'title' , 'message')) ;
+            return view('taskDone' , compact('tasks' , 'title' , 'message', 'vide')) ;
 
         }elseif ($action == 'late') {
+            $now  = Carbon::now()->format('Y-m-d') ;
             $tasks = Task::where('user_id', auth()->id())
-                        ->where('taskDueDate',">" , now())
+            ->where('taskDueDate',"<" , $now)
+            ->where('taskStatus' , '!=' , 'terminee')
                         ->get();
             
             $title = "Tâches en retard" ;
-             $taskcount = count( $tasks);
+            $taskcount = count( $tasks);
+            $vide = "Aucune tâche en retard" ;
             $message = " Total de ** $taskcount ** tâches en retard";
-            return view('taskDone' , compact('tasks' , 'title' , 'message')) ;
+            return view('taskDone' , compact('tasks' , 'title' , 'message', 'vide')) ;
 
         }elseif ($action == 'done') {
             $tasks = Task::where('user_id', auth()->id())
@@ -172,9 +183,22 @@ class TaskController extends Controller
                         ->get();
             
             $title = "Tâches terminées" ;
-             $taskcount = count( $tasks);
+            $taskcount = count( $tasks);
+            $vide = "Aucune tâche terminée pour le moment." ;
             $message = " Total de ** $taskcount ** tâches terminées";
-            return view('taskDone' , compact('tasks' , 'title' , 'message')) ;
+            return view('taskDone' , compact('tasks' , 'title' , 'message', 'vide')) ;
+
+        }elseif ($action == 'urgent') {
+            $tasks = Task::where('user_id', auth()->id())
+                        ->where('taskCategory',"=" , 'urgent')
+                        ->where('taskStatus','!=' , 'terminee')
+                        ->get();
+            
+            $title = "Tâches urgentes" ;
+            $taskcount = count( $tasks);
+            $vide = "Aucune tâche urgente en cours." ;
+            $message = " Total de ** $taskcount ** tâches urgente(s)";
+            return view('taskDone' , compact('tasks' , 'title' , 'message', 'vide')) ;
 
         }
     }

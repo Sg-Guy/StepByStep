@@ -66,12 +66,13 @@
             <i class="bi bi-plus-circle me-2"></i> Créer une nouvelle tâche
         </a>
         
-        <div class="d-flex flex-wrap gap-2 mb-5 p-2">
+        <div class="d-flex flex-wrap gap-3 mb-5 p-2">
             <form action="{{route('tasks.late')}}">
-                <button type="submit" name="action_type" value="today" class="btn btn-outline-secondary btn-filter active">Aujourd'hui</button>
-                <button type="submit" name="action_type" value="thisweek" class="btn btn-outline-secondary btn-filter">Cette semaine</button>
-                <button type="submit" name="action_type" value="done" class="btn btn-outline-secondary btn-filter">Terminées</button>
-                <button type="submit" name="action_type" value="late" class="btn btn-outline-secondary btn-filter">En retard</button>
+                <button type="submit" name="action_type" value="today" class="btn btn-outline-secondary btn-filter mb-2">Aujourd'hui</button>
+                <button type="submit" name="action_type" value="thisweek" class="btn btn-outline-secondary btn-filter  mb-2">Cette semaine</button>
+                <button type="submit" name="action_type" value="done" class="btn btn-outline-secondary btn-filter  mb-2">Terminées</button>
+                <button type="submit" name="action_type" value="late" class="btn btn-outline-secondary btn-filter  mb-2">En retard</button>
+                <button type="submit" name="action_type" value="urgent" class="btn btn-outline-secondary btn-filter  mb-2">Urgents</button>
 
             </form>
         </div>
@@ -106,14 +107,16 @@
 
                          <!-- Si la tâche est terminée , le checkbox est à true et à false sinon-->
                         
-                        <td><input type="checkbox" class="form-check-input fs-4" @if ($task->taskStatus=='terminee')
-                                @checked(true)          
-
+                        <td>
+                            <input type="checkbox" class="form-check-input fs-4" @if ($task->taskStatus=='terminee')
+                                @checked(true)    
+                                @disabled(true)
                             @else  
 
                                 @checked(false)
                                 @disabled(true)
-                            @endif ></td>
+                            @endif >
+                        </td>
                             
                          <!-- Titre de la tache-->
                         <td>
@@ -135,7 +138,14 @@
                                             @csrf
                                             @method('patch')
                                             <input type="text" name="taskStatus" hidden value="terminee">
-                                            <button class="btn btn-sm btn-success round" title="Terminer" >marquer comme terminée</button>
+                                            <button class="btn btn-sm btn-success round" title="Terminer" >terminer la tâche</button>
+                                        </form>
+                                    @else
+                                        <form action="{{route('task.status' , $task->id)}}" method="post">
+                                            @csrf
+                                            @method('patch')
+                                            <input type="text" name="taskStatus" hidden value="en cours">
+                                            <button class="btn btn-sm btn-success round" title="Terminer" >Rouvrir la tâche</button>
                                         </form>
                                     @endif
                                 </div>
@@ -194,7 +204,7 @@
                  <i class="bi bi-info-circle me-1"></i> Total de {{count($tasks)}} Tâches, dont {{($lateTasks)}} en retard.
             </p>
             @else
-                <p class="text-center h6"> Vous n'avez aucue tâche enrégistrée . <a href="{{route('create')}}">Créez-en une</a> </p>
+                <p class="text-center h6"> {{$vide}} <a href="{{route('create')}}">Créez-en une</a> </p>
             @endif
         </div>
         

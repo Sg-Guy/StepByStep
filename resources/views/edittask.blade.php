@@ -29,7 +29,13 @@
 
         
     </style>
+    @php
+        
+        if ($task->taskStatus=='terminee') {
 
+            abort(403, "ACTION IMPOSSIBLE") ;
+        }
+    @endphp
     <div class="container task-creation-card bg-white shadow-lg p-md-5 p-4 rounded-4 mt-4">
         
         <h1 class="display-5 mb-4 text-primary fw-bold">
