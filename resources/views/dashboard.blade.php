@@ -1,5 +1,14 @@
 <x-app-layout>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
     <head>
         <title>Tableau de Bord - Tâches</title>
         <link rel="stylesheet" href="/Bootstrap_5/css/bootstrap.min.css">
@@ -100,6 +109,8 @@
                 </div>
             </div>
             
+            @if (count($tasks) > 0)
+                
             <div class="col-6 col-md-3">
                 <div class="card text-white bg-purple p-4 shadow-sm border-0 card-custom">
                     <div class="d-flex align-items-center justify-content-between">
@@ -110,23 +121,55 @@
                     </div>
                 </div>
             </div>
+            @endif
         </section>
 
         <hr class="mt-4 mb-4"> 
         <h2 class="h3 fw-bold mb-4"><i class="bi bi-calendar-check me-2 text-primary"></i>Tâches Récentes</h2>
         
         <div class="mb-4">
-            <div class="input-group search-input-group">
-                <input type="search" class="form-control" placeholder="Rechercher une tâche...">
-                <button class="btn btn-primary" type="button">
-                    <i class="bi bi-search"></i>
-                </button>
-            </div>
+            <form action="{{route('tasks.search')}}" method="GET">
+                    <div class="input-group search-input-group">
+                    @csrf
+                    @method('GET')
+                    <input type="search" name="search" id="searchInput" class="form-control" placeholder="Rechercher une tâche...">
+                    <button class="btn btn-primary "  id='searchButton' type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+                </form>
+
+                @if ($tasksResearch)
+                    @if (count($tasksResearch) > 0)
+                    <div class="container w-75 alert alert-success d-flex flex-row mb-4 mt-4" >
+                        
+                        <div class="d-flex flex-column me-auto gap-4">
+                                <i class="text-center"> <h3 class="text-center"> Resultats de la recherche</h3> </i>
+                                @foreach ($tasksResearch as $item) 
+                                    <a href="{{route('all_tasks')}}" class="text-decoration-none">{{$item->taskTitle}}</a>
+                                @endforeach
+                            </div>
+
+                            <button type="button" class="btn-close text-red" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        
+                    @else
+                        <div class="container alert alert-danger alert-dismissible w-50 mt-3 mb-3 d-flex flex-row fade show" id="noTasksAlert" role="alert">
+                            <p class="text-black mb-0 me-auto">
+                                <!-- Ajout de me-auto pour aligner le texte à gauche et pousser le bouton à droite -->
+                                Oups ! Aucune tâche ne correspond à cette recherche 
+                            </p>
+                            <!-- Ajout de data-bs-dismiss="alert" pour activer le JS de Bootstrap -->
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+
+                    @endif
+                @endif
         </div>
 
-        <div>
+        <div id="tasklist">
             @if (count($tasks) > 0)
-                <div class="list-group">
+                <div class="list-group" id='tasklist'>
                 @foreach (auth()->user()->tasks->take(5) as $task) <a href="#" class="list-group-item list-group-item-action task-item mb-3 d-flex justify-content-between align-items-center bg-light">
                         
                         <div class="fw-bold text-dark">
@@ -155,7 +198,33 @@
             @endif
         </div>
     </main>
-    
-    <script src="/public/Bootstrap_5/js/bootstrap.min.js"></script>
+    <script>
+        
+
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+
+        if (searchInput && searchButton) {
+            // Fonction pour gérer l'état du bouton
+            function toggleSearchButtonState() {
+                // Désactive le bouton si la valeur de l'input est vide ou ne contient que des espaces
+                searchButton.disabled = searchInput.value.trim().length === 0;
+            }
+
+            // Définit l'état initial lors du chargement de la page
+            toggleSearchButtonState();
+
+            // Ajoute un écouteur d'événement 'input' (ou 'keyup') pour mettre à jour l'état en temps réel
+            searchInput.addEventListener('input', toggleSearchButtonState);
+        } else {
+            console.error("L'un des éléments (ou les deux) n'a pas été trouvé.");
+        }
+
+
+
+    </script>
+    <script src="/Bootstrap_5/js/bootstrap.min.js"></script>
+</body>
+</html>
 
 </x-app-layout>

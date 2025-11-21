@@ -18,7 +18,7 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function dash()
+    public function dash(Request $request)
     {
         //Toutes les tâches
         $all = Task::where('user_id' , auth()->id());
@@ -33,6 +33,7 @@ class ProfileController extends Controller
         //taches en retard
         $date1 = Carbon::now() ;
        $lateTasks = Task::where('user_id' , auth()->id()) 
+                            ->where('taskStatus','!=' , 'terminee')
                             ->where('taskDueDate','<' , $date1)
                             ->count();
 
@@ -42,7 +43,17 @@ class ProfileController extends Controller
 
         // nombre de tâches dont la date d'échéance est égale à la date d'aujourd'hui
 
-        return view('dashboard' , compact('tasks', 'taskToday' , 'all' , 'lateTasks' , 'doneTasks')) ;
+
+        //  Recherche de taches
+        if($request->search != null) {
+            $taskForResearch =$request->search;
+            $tasksResearch = Task::where ('user_id',auth()->id())
+                                ->where('taskTitle','LIKE',"%{$taskForResearch}%")->get() ;
+        }else {
+            $tasksResearch = null ;
+        }
+
+        return view('dashboard' , compact('tasks', 'taskToday' , 'all' , 'lateTasks' , 'doneTasks' , 'tasksResearch')) ;
         
     }
     public function edit(Request $request): View

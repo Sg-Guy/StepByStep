@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->string('taskTitle') ;
-            $table->longText('taskDescription') ;
-            $table->date('taskDueDate') ;
-            $table->string('taskCategory');
-            $table->string('taskPriority');
-            $table->enum('taskReminder' , allowed:['nouvelle' ,'en cours' , 'suspendue' , 'terminee'])->default(value:'nouvelle') ;
+            $table->longText('taskDescription')->nullable() ;
+            $table->date('taskDueDate')->nullable() ;
+            $table->string('taskCategory')->nullable();
+            $table->enum('taskPriority' , allowed:["basse","normale","haute" , "urgent"])->default('normale');
+            $table->date('taskReminder')->nullable() ;
             $table->timestamps();
         });
     }

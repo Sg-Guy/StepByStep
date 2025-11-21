@@ -57,7 +57,7 @@
     <div class="page-container bg-white shadow-lg p-5 rounded-4 mt-4 card-container mx-auto">
         
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
-            <h1 class="h2 mb-0 text-primary fw-bold">Mes Tâches</h1> 
+            <h1 class="h2 mb-0 text-primary fw-bold">{{$title}}</h1> 
             
             <div class="input-group search-input-group">
                 <input type="search" class="form-control" placeholder="Rechercher une tâche...">
@@ -71,24 +71,39 @@
             <i class="bi bi-plus-circle me-2"></i> Créer une nouvelle tâche
         </a>
         
-        <div class="d-flex flex-wrap gap-2 mb-5 p-2 border-bottom"> <button class="btn btn-outline-secondary btn-filter" aria-current="false">Aujourd'hui</button>
-            <button class="btn btn-outline-secondary btn-filter" aria-current="false">Cette semaine</button>
-            <button class="btn btn-primary btn-filter active" aria-current="true">Terminées</button> <button class="btn btn-outline-secondary btn-filter" aria-current="false">En retard</button>
+         <div class="d-flex flex-wrap gap-2 mb-5 p-2">
+            <form action="{{route('tasks.late')}}">
+                <button type="submit" name="action_type" value="today" class="btn btn-outline-secondary btn-filter active">Aujourd'hui</button>
+                <button type="submit" name="action_type" value="thisweek" class="btn btn-outline-secondary btn-filter">Cette semaine</button>
+                <button type="submit" name="action_type" value="done" class="btn btn-outline-secondary btn-filter">Terminées</button>
+                <button type="submit" name="action_type" value="late" class="btn btn-outline-secondary btn-filter">En retard</button>
+
+            </form>
         </div>
         
-        <h2 class="h4 mb-3"><i class="bi bi-check2-circle text-success me-2"></i>Tâches Terminées</h2>
+        <h2 class="h4 mb-3"><i class="bi bi-check2-circle text-success me-2"></i>{{$title}}</h2>
         
         <div class="table-responsive">
 
-            @if (count($taskdone) > 0) <table class="table table-hover align-middle">
+            @if (session('succes') )
+                <div class="alert alert-warning d-flex flex-row">
+
+                   <p class="me-auto">
+                     {{session('succes')}}
+                   </p>
+                    <button type="button" class="btn-close text-red" data-bs-dismiss="alert" aria-label="Close"></button>
+
+                </div>
+            @endif
+            @if (count($tasks) > 0) <table class="table table-hover align-middle">
                     <thead class="table-light">
                         <tr>
                             <th style="width: 5%;">État</th> <th style="width: 50%;">Tâche</th> <th style="width: 25%;">Date Création</th> <th class="hidden-th"></th> 
                             <th style="width: 20%;" class="text-end">Actions</th> </tr>
                     </thead>
                     <tbody>
-                        @foreach ($taskdone as $task)
-                        <tr class="table-success opacity-75"> <td> <input type="checkbox" class="form-check-input fs-4" checked disabled> </td> <td>
+                        @foreach ($tasks as $task)
+                        <tr class="table-success opacity-100"> <td> <input type="checkbox" class="form-check-input fs-4" checked disabled> </td> <td>
                                 <p class="h5 mb-0 text-decoration-line-through text-success">{{$task->taskTitle}}</p>
                                 @if (isset($task->description))
                                     <small class="text-muted fst-italic">{{ Str::limit($task->description, 50) }}</small>
@@ -119,7 +134,7 @@
                 </table>
                 
                 <p class="text-muted mt-4 pt-3 border-top">
-                    <i class="bi bi-info-circle me-1"></i> Total de **{{count($taskdone)}}** tâches terminées.
+                    <i class="bi bi-info-circle me-1"></i>{{$message}}
                 </p>
                 
             @else
@@ -131,4 +146,5 @@
         </div>
         
     </div>
+    <script src="/Bootstrap_5/js/bootstrap.min.js"></script>
 </x-app-layout>

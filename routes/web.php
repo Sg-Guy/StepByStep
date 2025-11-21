@@ -48,9 +48,15 @@ Route::prefix('/tasks')->middleware('auth')->controller(TaskController::class)->
 
     //Taches terminées
     Route::get('/done' , 'done')->name('tasks.done') ;
-    
 
+    //Taches en retard
+    Route::get('/late' , 'late')->name('tasks.late') ;
+
+    
+    
 }) ;
+// Recherche des taches
+Route::get('search', [ProfileController::class , 'dash'])->name('tasks.search') ;
 
 
 require __DIR__.'/auth.php';

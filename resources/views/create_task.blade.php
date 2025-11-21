@@ -126,10 +126,7 @@
                     <label for="taskReminder" class="form-label fw-bold">Définir un Rappel</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-bell"></i></span>
-                        <select class="form-select" name="taskReminder" aria-label="Rappel">
-                            <option value="0" @if(old('taskReminder') == '0') selected @endif>Pas de rappel</option>
-                            <option value="1" @if(old('taskReminder') == '1') selected @endif>1 heure avant</option>
-                            <option value="24" @if(old('taskReminder') == '24') selected @endif>1 jour avant</option> </select>
+                        <input type="datetime-local" class="form-control" name="taskReminder">
                     </div>
                 </div>
             </div>

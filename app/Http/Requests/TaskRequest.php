@@ -31,7 +31,7 @@ class TaskRequest extends FormRequest
         return [
             'taskTitle' => 'required|string|max:255' ,
             'taskDescription'=>'required|string' ,
-            'taskDueDate'=>'required|date|after_or_equal:today' ,
+            'taskDueDate'=>'required|date|after_or_equal:now' ,
             'taskCategory'=>'required|string' ,
             'taskPriority'=>'required' ,
             'taskReminder'=>'nullable' ,

@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TaskRequest;
 use App\Models\Task;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+
+use function Symfony\Component\Clock\now;
 
 class TaskController extends Controller
 {
@@ -26,7 +29,14 @@ class TaskController extends Controller
         //Toutes les tâches
         $tasks = Task::where('user_id' , auth()->id())->orderBy('created_at' , 'desc')->get();
         //dd($tasks) ;
-        return view('tasks' , compact('tasks')) ;
+        //taches en retard
+        $date1 = Carbon::now() ;
+        $lateTasks = Task::where('user_id' , auth()->id()) 
+                            ->where('taskStatus','!=' , 'terminee')
+                            ->where('taskDueDate','<' , $date1)
+                            ->count();
+
+        return view('tasks' , compact('tasks' , 'lateTasks')) ;
     }
 
     //Formulaie de création
@@ -103,7 +113,7 @@ class TaskController extends Controller
     {
         //Task::where('id' , "=" , $task->id)->get();
         $task->delete();
-        return redirect()->route('all_tasks') ;
+        return redirect()->back()->with('succes' , 'Tâche suppimée') ;
     }
 
 
@@ -112,7 +122,60 @@ class TaskController extends Controller
      */
     public function done()
     {
-        $taskdone = Task::where('taskStatus',"=" , 'terminee')->get();
+        $taskdone = Task::where('user_id', auth()->id())
+                    ->where('taskStatus',"=" , 'terminee')
+                    ->get();
         return view('taskDone' , compact('taskdone')) ;
+    }
+    
+    /**
+     * Taches en retard
+     */
+    public function late(Request $request)
+    {
+        $action = $request->action_type;
+        if ($action == 'today') {
+
+            $tasks = Task::where('user_id', auth()->id())
+                        ->where('taskDueDate',"=" , now()->format('Y-m-d'))
+                        ->get();
+
+            $title = "Les tâches du jour" ;
+            $taskcount = count( $tasks);
+            $message = " Total de ** $taskcount ** tâches pour aujourd'hui";
+
+            return view('taskDone' , compact('tasks' , 'title' , 'message')) ;
+
+        } elseif ($action == 'thisweek') {
+            $tasks = Task::where('user_id', auth()->id())
+                        ->where('taskDueDate',">" , now())
+                        ->get();
+
+            $title = "Les tâches de la semaine" ;
+             $taskcount = count( $tasks);
+            $message = " Total de ** $taskcount ** tâches pour cette semaine";
+            return view('taskDone' , compact('tasks' , 'title' , 'message')) ;
+
+        }elseif ($action == 'late') {
+            $tasks = Task::where('user_id', auth()->id())
+                        ->where('taskDueDate',">" , now())
+                        ->get();
+            
+            $title = "Tâches en retard" ;
+             $taskcount = count( $tasks);
+            $message = " Total de ** $taskcount ** tâches en retard";
+            return view('taskDone' , compact('tasks' , 'title' , 'message')) ;
+
+        }elseif ($action == 'done') {
+            $tasks = Task::where('user_id', auth()->id())
+                        ->where('taskStatus',"=" , 'terminee')
+                        ->get();
+            
+            $title = "Tâches terminées" ;
+             $taskcount = count( $tasks);
+            $message = " Total de ** $taskcount ** tâches terminées";
+            return view('taskDone' , compact('tasks' , 'title' , 'message')) ;
+
+        }
     }
 }

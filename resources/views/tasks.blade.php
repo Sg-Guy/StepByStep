@@ -53,12 +53,12 @@
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
             <h1 class="h2 mb-0">Mes Tâches</h1> 
             
-            <div class="input-group search-input-group">
+            <!--div class="input-group search-input-group">
                 <input type="search" class="form-control" placeholder="Rechercher une tâche...">
                 <button class="btn btn-primary" type="button">
                     <i class="bi bi-search"></i>
                 </button>
-            </div>
+            </!--div--->
         </div>
         
         <!---->
@@ -67,10 +67,13 @@
         </a>
         
         <div class="d-flex flex-wrap gap-2 mb-5 p-2">
-            <button class="btn btn-outline-secondary btn-filter active">Aujourd'hui</button>
-            <button class="btn btn-outline-secondary btn-filter">Cette semaine</button>
-            <button class="btn btn-outline-secondary btn-filter">Terminées</button>
-            <button class="btn btn-outline-secondary btn-filter">En retard</button>
+            <form action="{{route('tasks.late')}}">
+                <button type="submit" name="action_type" value="today" class="btn btn-outline-secondary btn-filter active">Aujourd'hui</button>
+                <button type="submit" name="action_type" value="thisweek" class="btn btn-outline-secondary btn-filter">Cette semaine</button>
+                <button type="submit" name="action_type" value="done" class="btn btn-outline-secondary btn-filter">Terminées</button>
+                <button type="submit" name="action_type" value="late" class="btn btn-outline-secondary btn-filter">En retard</button>
+
+            </form>
         </div>
         
         <h2 class="h4 mb-3">Liste des Tâches</h2>
@@ -92,8 +95,13 @@
                 <tbody>
                     <!-- Recupération et manipulation des tâches liées à l'utilisateur connecté-->
                     @foreach (auth()->user()->tasks as $task)
-                    <tr class="table-success opacity-75 @if ($task->taskStatus=='terminee')
-                    text-decoration-line-through opacity-25 
+                    <tr class="@if($task->taskStatus=='terminee') table-success opacity-100  
+                    text-decoration-line-through  
+                    
+                        @elseif ($task->taskStatus=='en cours') 
+                            table-primary opacity-100  
+                        @elseif ($task->taskStatus=='en pause') 
+                            table-warning opacity-100  
                         @endif">
 
                          <!-- Si la tâche est terminée , le checkbox est à true et à false sinon-->
@@ -103,7 +111,8 @@
 
                             @else  
 
-                                @checked(false)        
+                                @checked(false)
+                                @disabled(true)
                             @endif ></td>
                             
                          <!-- Titre de la tache-->
@@ -182,7 +191,7 @@
                     </tbody>
             </table>
             <p class="text-muted mt-3 pt-3 border-top">
-                 <i class="bi bi-info-circle me-1"></i> Total de {{count($tasks)}} Tâches, dont 2 en retard.
+                 <i class="bi bi-info-circle me-1"></i> Total de {{count($tasks)}} Tâches, dont {{($lateTasks)}} en retard.
             </p>
             @else
                 <p class="text-center h6"> Vous n'avez aucue tâche enrégistrée . <a href="{{route('create')}}">Créez-en une</a> </p>
