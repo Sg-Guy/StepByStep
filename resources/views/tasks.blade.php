@@ -204,7 +204,7 @@
                  <i class="bi bi-info-circle me-1"></i> Total de {{count($tasks)}} Tâches, dont {{($lateTasks)}} en retard.
             </p>
             @else
-                <p class="text-center h6"> {{$vide}} <a href="{{route('create')}}">Créez-en une</a> </p>
+                <p class="text-center h6"> Vous n'avez acune tâche pour le moment. <br> <a href="{{route('create')}}">Créez-en une</a> </p>
             @endif
         </div>
         

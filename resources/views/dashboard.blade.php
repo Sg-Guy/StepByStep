@@ -181,8 +181,8 @@
                                 <span class="badge bg-danger me-2">En Retard</span>
                             @else
                                 <span class="badge bg-info me-2">À faire</span>
-                            @endif
-                            
+                                @endif
+                                
                             <span class="text-secondary small">
                                 Échéance : **{{ \Carbon\Carbon::parse($task->taskDueDate)->format('d M') }}**
                             </span>
@@ -198,6 +198,11 @@
             @endif
         </div>
     </main>
+    <footer style="background-color: #6a4cee ; height:10 hv" class="mt-5">
+        <div class="text-center">
+            {{now()->format('Y')}} StepByStep
+        </div>
+    </footer>
     <script>
         
 
