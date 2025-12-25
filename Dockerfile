@@ -28,6 +28,11 @@ RUN chmod -R 775 storage bootstrap/cache
 # Port Render
 EXPOSE 10000
 
+#npm
+npm install
+
+#npm
+npm run build 
 # Démarrage unique (OBLIGATOIRE sur Render)
 CMD php artisan migrate --force && \
     php artisan storage:link || true && \
