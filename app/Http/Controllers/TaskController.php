@@ -55,6 +55,7 @@ class TaskController extends Controller
         $task = new Task($request->validated()) ;
         $task->user_id = auth()->user()->id; 
         $task->taskStatus = $request->taskStatus ?? 'en pause' ;
+       
         
 
         $task->save();

@@ -34,7 +34,7 @@ class TaskRequest extends FormRequest
             'taskDueDate'=>'required|date|after_or_equal:now' ,
             'taskCategory'=>'required|string' ,
             'taskPriority'=>'required' ,
-            'taskReminder'=>'nullable' ,
+            'taskReminder'=>'nullable|date' ,
         ]; 
     }
 

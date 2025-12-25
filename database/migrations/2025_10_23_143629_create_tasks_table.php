@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('taskDueDate')->nullable() ;
             $table->string('taskCategory')->nullable();
             $table->enum('taskPriority' , allowed:["basse","normale","haute" , "urgent"])->default('normale');
-            $table->date('taskReminder')->nullable() ;
+            $table->dateTime('taskReminder')->nullable() ;
             $table->timestamps();
         });
     }
