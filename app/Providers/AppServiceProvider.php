@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
@@ -18,10 +19,10 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot( UrlGenerator $url): void
-    {
-        if (env('APP_ENV') == 'production') {
-        $url->forceScheme('https');
+    public function boot()
+{
+    if (config('app.env') === 'production') {
+        URL::forceScheme('https');
     }
-    }
+}
 }
