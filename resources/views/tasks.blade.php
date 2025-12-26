@@ -436,6 +436,16 @@
                 font-size: 1rem;
             }
         }
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 2rem;
+            margin-top: 3rem;
+            border-radius: 24px 24px 0 0;
+            text-align: center;
+            font-weight: 600;
+        }
     </style>
 </head>
 
@@ -660,6 +670,9 @@
         </div>
     </div>
 
+    <footer>
+        <div>© {{now()->format('Y')}} StepByStep - Tous droits réservés</div>
+    </footer>
     <script src="/Bootstrap_5/js/bootstrap.min.js"></script>
 </body>
 </x-app-layout>
