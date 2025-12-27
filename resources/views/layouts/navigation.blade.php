@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="modern-nav">
+<nav x-data="{ open: false, dropdownOpen: false }" class="modern-nav">
     <style>
         :root {
             --primary-color: #6366f1;
@@ -145,9 +145,10 @@
 
         .dropdown-arrow {
             transition: transform 0.3s ease;
+            font-size: 0.875rem;
         }
 
-        .user-button:hover .dropdown-arrow {
+        .user-button[aria-expanded="true"] .dropdown-arrow {
             transform: rotate(180deg);
         }
 
@@ -285,7 +286,10 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .nav-links,
+            .nav-links {
+                display: none;
+            }
+            
             .user-section {
                 display: none;
             }
@@ -333,8 +337,10 @@
 
             <!-- User Section (Desktop) -->
             <div class="user-section">
-                <div class="user-dropdown" x-data="{ dropdownOpen: false }">
-                    <button class="user-button" @click="dropdownOpen = !dropdownOpen">
+                <div class="user-dropdown">
+                    <button class="user-button" 
+                            @click="dropdownOpen = !dropdownOpen"
+                            :aria-expanded="dropdownOpen">
                         <div class="user-avatar">
                             {{ strtoupper(substr(Auth::user()->firstname, 0, 1)) }}{{ strtoupper(substr(Auth::user()->lastname, 0, 1)) }}
                         </div>
@@ -342,7 +348,11 @@
                         <i class="bi bi-chevron-down dropdown-arrow"></i>
                     </button>
                     
-                    <div class="dropdown-menu" :class="{ 'show': dropdownOpen }" @click.away="dropdownOpen = false">
+                    <div class="dropdown-menu" 
+                         :class="{ 'show': dropdownOpen }" 
+                         @click.away="dropdownOpen = false"
+                         x-show="dropdownOpen"
+                         x-transition>
                         <a href="{{ route('profile.edit') }}" class="dropdown-link">
                             <i class="bi bi-person-circle"></i>
                             Profil
